@@ -1,0 +1,60 @@
+{
+  "artifact_sha256": "d4b0dcec8e3834ef38182bc8134b2d77861fb39d2c12e69e3b9d37604ef7eea2",
+  "evidence_scope": "Offline static analysis of cn.damai 9.0.35; not observed backend traffic or validated requests.",
+  "source_root": "business/sources/",
+  "queries": [
+    {
+      "purpose": "performance_item_detail",
+      "api": "mtop.alibaba.damai.detail.getdetail",
+      "version": "1.2",
+      "request_configuration": "Dolores RequestConfig.setGet(false)",
+      "need_session": false,
+      "need_ecode": false,
+      "business_fields": ["itemId", "dmChannel (conditional)"],
+      "source": "cn/damai/trade/newtradeorder/ui/projectdetail/projectdetailitem/request/ProjectItemDetailRequest.java",
+      "callsite": "cn/damai/trade/newtradeorder/ui/projectdetail/projectdetailitem/repository/ProjectItemRepository.java:160-177",
+      "variant_note": "Debug + PRE + ProjectDetailDMPreApi can select mtop.damai.item.detail.getdetail. This request's visible getVersion returns 1.2; a separate new-version constant 1.0 is not proof of this request using 1.0."
+    },
+    {
+      "purpose": "performance_sku_availability_display",
+      "api": "mtop.alibaba.detail.subpage.getdetail",
+      "version": "2.0",
+      "request_configuration": "Dolores RequestConfig.setGet(true)",
+      "need_session": false,
+      "need_ecode": false,
+      "business_fields": ["itemId", "bizCode", "scenario", "exParams"],
+      "scenario": "itemsku",
+      "ex_params_fields": ["dataId", "dataType", "privilegeActId", "activityId"],
+      "source": "cn/damai/commonbusiness/seatbiz/sku/qilin/request/SkuDoloresRequest.java",
+      "callsite": "cn/damai/trade/newtradeorder/ui/projectdetail/projectdetailitem/repository/ProjectItemRepository.java:127-157",
+      "response_decode": "SpecialResultBean.result JSON -> SkuBean",
+      "availability_signals": ["perform.performSalable", "perform.skuList[].clickable", "perform.skuList[].frontEndStatus", "itemBuyBtn"],
+      "limitation": "Not proof of exact remaining ticket count, reservation, or successful purchase. Quantity-like fields are not assigned backend semantics here."
+    }
+  ],
+  "orders": {
+    "normal_configured_domain": "mtop.damai.cn",
+    "domain_application": "DMRequester.a calls MtopBusiness.setCustomDomain(this.g)",
+    "default_protocol": "https",
+    "entrance": "gw",
+    "path_template": "/gw/{lowercase_api}/{lowercase_version}/",
+    "method": "POST",
+    "content_type": "application/x-www-form-urlencoded;charset=UTF-8",
+    "need_session": true,
+    "need_ecode": true,
+    "api_selection": "DMQueryKey uses intent rtc via tb.yq0.e; do not assume all calls use new names.",
+    "operations": [
+      {"operation": "build", "new_api": "mtop.damai.trade.order.build", "new_version": "1.0", "old_api": "mtop.trade.order.build", "old_version": "4.0", "use_wua_set_here": true, "business_data": "UltronParamsMaker.makeBuildOrderParams; normal purchase_from defaults to 2: buyNow=true, buyParam, exParams", "source": "cn/damai/ultron/net/UltronDataManager.java:179-198"},
+      {"operation": "adjust", "new_api": "mtop.damai.trade.order.adjust", "new_version": "1.0", "old_api": "mtop.trade.order.adjust", "old_version": "5.0", "use_wua_set_here": false, "business_data": "Order context asyncRequestData -> serialized params, optional compression", "source": "cn/damai/ultron/net/UltronDataManager.java:163-176", "note": "Conditional update; not mandatory on every order. No explicit useWua in this constructor is not proof of absence of other security fields."},
+      {"operation": "create", "new_api": "mtop.damai.trade.order.create", "new_version": "1.0", "old_api": "mtop.trade.order.create", "old_version": "4.0", "use_wua_set_here": true, "business_data": "Order context submitRequestData -> serialized params, optional compression; not a copy of build input", "source": "cn/damai/ultron/net/UltronDataManager.java:201-222"}
+    ],
+    "ui_purchase_parameter": {"format": "itemId_count_skuId", "source": "cn/damai/commonbusiness/seatbiz/sku/qilin/ui/NcovSkuFragment.java:1340-1421"},
+    "submit_success": {"event": "submitSuccessEvent", "subscriber": "tb.wq0", "decode": "MtopResponse.getDataJsonObject() -> DmUltronPayResultBean", "fields": ["bizOrderId", "nextUrl", "partSuccess"], "source": "tb/wq0.java:58-112", "limitation": "Creation result is not payment or ticket issuance."}
+  },
+  "security": {
+    "signing": "SecurityGuard / InnerSignImpl; native algorithms not recovered",
+    "header_mapping": "mtopsdk/mtop/protocol/converter/impl/InnerNetworkConverter.java:12-48",
+    "selected_headers": ["x-sign", "x-mini-wua", "x-umt", "x-sgext", "x-sid", "x-uid", "x-utdid", "x-devid", "x-t", "x-appkey", "x-ttid"],
+    "note": "Mapped fields are conditional; request flags false do not imply unsigned/unrestricted access. No credentials or valid generated signatures are provided."
+  }
+}

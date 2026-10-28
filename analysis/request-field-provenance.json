@@ -1,0 +1,57 @@
+{
+  "scope": {
+    "primary_apk": "cn.damai 9.0.35",
+    "primary_sha256": "d4b0dcec8e3834ef38182bc8134b2d77861fb39d2c12e69e3b9d37604ef7eea2",
+    "comparison_apk": "cn.damai 9.0.34",
+    "comparison_sha256": "53b25865953a4521210100a0b830b2bc73d77df9dcfe496b181e503f3dcd3363",
+    "goal": "Explain protocol construction and independently reproducible fields, not replace an API client with UI automation.",
+    "limitation": "No valid security factors generated; no new backend requests, account access or orders performed in this investigation."
+  },
+  "fields": [
+    {"names": ["api", "v"], "origin": "Concrete request class plus business API selection; builder lowercases both using Locale.US.", "classification": "request_definition", "source": "business/sources/mtopsdk/mtop/protocol/builder/impl/InnerProtocolParamBuilderImpl.java:149-155"},
+    {"names": ["data"], "origin": "Request data JSON after public business parameter injection and optional priority data insertion; not the HTTP form body itself.", "classification": "serialized_business_state", "source": "business/sources/cn/damai/common/net/mtop/netfit/DMBaseMtopRequest.java:215-228"},
+    {"names": ["source", "channel_from", "osType", "appType", "platform"], "origin": "DMBase request helper defines source/OS/app type; channel_from comes from i9; platform default injection is conditional. Not proof that every Dolores or Ultron request has identical extras.", "classification": "business_constants_and_conditions", "source": "business/sources/tb/hi0.java:29-90"},
+    {"names": ["version", "x-app-ver"], "origin": "Business version uses AppConfig.n versionCode; h9 version header and SDK appVersion use versionName. These are not interchangeable.", "classification": "installed_package_metadata", "source": "business/sources/cn/damai/common/AppConfig.java; business/sources/tb/hi0.java:35-40; business/sources/tb/h9.java:62-85"},
+    {"names": ["ttid", "x-ttid"], "origin": "AppConfig.l combines initialized ttid string resource, @damai_android_, and versionName; registered into MTop runtime.", "classification": "resources_and_initialization", "source": "business/sources/cn/damai/common/AppConfig.java"},
+    {"names": ["model", "osVersion", "connmode", "iscard", "user-agent"], "origin": "h9 caches Android device, OS, network, SIM and locale observations, then builds request headers. Some paths omit private identifiers. Header values may already be encoded before generic converter processing.", "classification": "android_runtime_observations", "source": "business/sources/tb/h9.java:35-90,133-160"},
+    {"names": ["t", "x-t"], "origin": "SDKUtils.getCorrectionTime(), not an arbitrary fixed timestamp.", "classification": "corrected_runtime_clock", "source": "business/sources/mtopsdk/mtop/protocol/builder/impl/InnerProtocolParamBuilderImpl.java:149-151"},
+    {"names": ["utdid", "deviceId", "x-utdid", "x-devid"], "origin": "Mtop getters read SDK XState; initialization involves device identifier providers/manager. Actual identifiers are not available from static constants.", "classification": "device_sdk_state", "source": "business/sources/mtopsdk/mtop/intf/Mtop.java:357-410"},
+    {"names": ["sid", "uid", "x-sid", "x-uid", "damai_cn_user"], "origin": "Account/session runtime, not values to invent from package metadata; no values extracted here.", "classification": "authenticated_account_state", "source": "business/sources/mtopsdk/mtop/intf/Mtop.java:370-389; business/sources/tb/h9.java"},
+    {"names": ["appKey", "authCode"], "origin": "MTop configuration and SecurityGuard-backed app-key lookup by configured index; not a general substitute for security factors.", "classification": "sdk_configuration_and_packaged_security_data", "source": "business/sources/mtopsdk/mtop/global/init/InnerMtopInitTask.java; business/sources/mtopsdk/security/InnerSignImpl.java"},
+    {"names": ["x-sign", "x-mini-wua", "x-umt", "x-sgext", "wua"], "origin": "SecurityGuard Unified/MiddleTier/securitybody outputs; branches and null handling vary. Not all are always present, and wua is not simply another name for mini-wua.", "classification": "protected_security_component_outputs", "source": "business/sources/mtopsdk/security/InnerSignImpl.java; business/sources/mtopsdk/mtop/protocol/builder/impl/InnerProtocolParamBuilderImpl.java:224-278"}
+  ],
+  "transport": {
+    "header_mapping": "business/sources/mtopsdk/mtop/protocol/converter/impl/InnerNetworkConverter.java:12-48",
+    "header_encoding": "AbstractNetworkConverter.buildRequestHeaders URL-encodes mapped non-null values using Java URLEncoder UTF-8; upstream headers may have separate encoding.",
+    "form_encoding": "NetworkConverterUtils.createParamQueryStr encodes both keys and values, iterates map order, and appends literal null for a null encoded key/value; it does not sort entries.",
+    "warning": "JSON serialization, header encoding, HTTP form encoding and signer input are separate stages; synthetic matching metadata does not establish server acceptance."
+  },
+  "new_plugin_evidence": {
+    "discovery": "libsgmain.so, libsgnocaptcha.so and libsgxdata.so are ZIP/APK containers with classes.dex despite their .so suffix.",
+    "extracted_to": "security-plugins/v9035/",
+    "jadx_output": "security-plugins/v9035/jadx/sources/",
+    "decompilation_exit_code": 0,
+    "provenance": "security-plugins/provenance.json",
+    "native_boundary": "InnerSignImpl -> unified security dynamic proxy -> plugin router -> JNICLibrary.doCommandNative",
+    "native_router_source": "security-plugins/v9035/jadx/sources/com/alibaba/wireless/security/mainplugin/C0013.java:5-8",
+    "native_declaration_source": "security-plugins/v9035/jadx/sources/com/taobao/wireless/security/adapter/JNICLibrary.java:3-5",
+    "bytecode_verification": "security-plugins/native-boundary-evidence.json",
+    "limit": "The call boundary is confirmed; native internals, all runtime dependencies, security factor portability and backend verification rules are not recovered."
+  },
+  "cross_version_verification": {
+    "evidence": "request-provenance-verification.json",
+    "selected_class_names": 8,
+    "method_identities_in_union": 26,
+    "methods_v9035": 25,
+    "methods_v9034": 20,
+    "matching_normalized_instruction_hashes": 15,
+    "different_in_both_versions": 4,
+    "present_in_only_one_selected_mapping": 7,
+    "limit": "Obfuscated class names/methods may change meaning across versions. Missing selected signatures do not prove missing functionality. Four mismatches do not alone establish semantic differences."
+  },
+  "feasibility": {
+    "established": ["API/version selection and transport layout", "ordinary metadata and business-field provenance", "protected component call boundary", "byte identity of the three selected plugins across sampled versions/ABIs"],
+    "not_established": ["standalone generation of server-valid security factors", "complete native algorithm or runtime-environment reconstruction", "independent client successful order query or creation", "avoidance of backend anti-abuse checks"],
+    "decision": "Do not present an unsigned probe, UI navigation, copied device headers, or plugin decompilation alone as a working independent App-equivalent API client."
+  }
+}

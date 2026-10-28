@@ -1,0 +1,53 @@
+# Local environments and generated output
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.idea/
+.vscode/
+node_modules/
+target/
+dist/
+build/
+/damai_runtime/agent.bundle.js
+
+# Credentials, private captures and account data
+.env
+.env.*
+.npmrc
+.netrc
+.pypirc
+*.pem
+*.key
+*.p12
+*.pfx
+*.log
+*.har
+*.pcap
+*.pcapng
+*.db
+*.sqlite
+*.sqlite3
+
+# Third-party APKs, archives, binaries and decompilation output
+*.apk
+*.dex
+*.so
+*.class
+*.jar
+*.zip
+*.xz
+/tools/*
+!/tools/native-probe/
+
+# Publish only explicitly reviewed, non-sensitive analysis summaries.
+/analysis/*
+!/analysis/api-map.json
+!/analysis/download-source.json
+!/analysis/request-field-provenance.json
+!/analysis/verification.json

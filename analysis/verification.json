@@ -1,0 +1,32 @@
+{
+  "apk_sha256": "d4b0dcec8e3834ef38182bc8134b2d77861fb39d2c12e69e3b9d37604ef7eea2",
+  "store_md5_matches": true,
+  "jarsigner": {
+    "command": "jarsigner -verify damai-9.0.35.apk",
+    "java_version": "11.0.9",
+    "exit_code": 0,
+    "result": "jar 已验证。",
+    "warnings": ["证书链不受本地信任库信任", "自签名证书", "1024-bit RSA 密钥存在安全风险", "签名无时间戳"],
+    "scope": "JAR/v1 signature verification only; not APK v2 verification or independent publisher identity attestation."
+  },
+  "embedded_dex": {
+    "count": 25,
+    "bytes": 126199536,
+    "local_zip_crc32": "all passed during extraction",
+    "dex_file_size": "all passed",
+    "dex_sha1": "all passed",
+    "dex_adler32": "all passed",
+    "details": "dex-integrity.json"
+  },
+  "decompilation": {
+    "jadx_version": "1.5.6",
+    "outer_apk": {"exit_code": 3, "error_count": 148, "output": "jadx/", "note": "data.png has no usable ZIP EOCD; other classes/resources were emitted."},
+    "embedded_dex": {"exit_code": 3, "error_count": 134, "output": "business/", "note": "JADX emitted source but reported decompilation errors. Some methods retain fallback instruction listings or throw UnsupportedOperationException in generated Java; not original app behavior."}
+  },
+  "runtime": {
+    "app_executed": false,
+    "ticket_backend_called": false,
+    "orders_submitted": false,
+    "scope": "Offline static investigation, not a working authenticated API client."
+  }
+}

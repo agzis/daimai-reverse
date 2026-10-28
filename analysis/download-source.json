@@ -1,0 +1,14 @@
+{
+  "store_page": "https://a.app.qq.com/o/simple.jsp?pkgname=cn.damai",
+  "download_url_published": "http://imtt.dd.qq.com/sjy.00022/sjy.00004/16891/apk/2DB7E7A1342AED9014B52655C5EC9F0E.apk?fsname=cn.damai_9.0.35.apk",
+  "download_url_used": "https://imtt.dd.qq.com/sjy.00022/sjy.00004/16891/apk/2DB7E7A1342AED9014B52655C5EC9F0E.apk?fsname=cn.damai_9.0.35.apk",
+  "store_version": "9.0.35",
+  "store_bytes": 110956621,
+  "store_md5": "2DB7E7A1342AED9014B52655C5EC9F0E",
+  "local_sha256": "d4b0dcec8e3834ef38182bc8134b2d77861fb39d2c12e69e3b9d37604ef7eea2",
+  "authenticity_limit": "Downloaded over HTTPS from Tencent's application distribution CDN. MD5 agrees with store metadata. Certificate extracted but not independently matched to a publisher-controlled certificate or cryptographically verified.",
+  "reference": "https://github.com/morluto/rea",
+  "method_reference": "https://github.com/morluto/rea/blob/main/docs/android-analysis.md",
+  "tools": {"jadx": "1.5.6", "androguard": "4.1.4", "java": "11.0.9"},
+  "rea_usage": "Referenced REA's artifact-bound static evidence workflow; used standalone JADX and Androguard, not an installed REA MCP server. REA's headless Android adapter requires a different JAR and JDK >=17."
+}
